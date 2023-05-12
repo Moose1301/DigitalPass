@@ -16,8 +16,6 @@ export class User {
     public totp_authenticated_at: number | undefined;
     public role: Role;
     public created_at: Date;
-    public updated_at: Date;
-
 
 
     constructor(
@@ -29,8 +27,7 @@ export class User {
         password: string,
         language: string,
         role: Role,
-        created_at: Date,
-        updated_at: Date
+        created_at: Date
     ) {
         this.id = id;
         this.username = username;
@@ -41,6 +38,20 @@ export class User {
         this.language = language;
         this.role = role;
         this.created_at = created_at;
-        this.updated_at = updated_at;
     }
+
+    public toDocument(): any {
+        return {
+            _id: this.id,
+            username: this.username,
+            email: this.email,
+            name_first: this.name_first,
+            name_last: this.name_last,
+            password: this.password,
+            language: this.language,
+            role: this.role.id,
+            created_at: this.created_at.getMilliseconds()
+        }
+    }
+    
 }

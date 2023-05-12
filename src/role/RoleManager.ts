@@ -24,9 +24,7 @@ export class RoleManager {
     }
     public static saveRole(role: Role): void {
         const collection: Collection<Document> = DatabaseHandler.getDatabase().collection("roles");
-
-        collection.findOneAndReplace({
-            _id: role.id
-        }, role.toDocument());
+        const filter = { _id: role.id };
+        collection.findOneAndReplace(filter, role.toDocument());
     }
 }
