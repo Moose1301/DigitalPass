@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { UserManager } from '../../../user/UserManager';
 import { User } from '../../../user/model/User';
+import UUID from '../../../type/UUID';
 
 
 
@@ -16,7 +17,7 @@ export class UserController {
     }
     public static async getUser(req: Request, res: Response, next: NextFunction): Promise<Response> {
         const { id } = req.query
-        const user: User = UserManager.findById(id as string);
+        const user: User = await UserManager.findById(UUID.parseUUID(id as string));
         return res.status(200).json({
             id: user.id,
             email: user.email,
@@ -29,7 +30,7 @@ export class UserController {
         });
     }
     public static async getListUser(req: Request, res: Response, next: NextFunction): Promise<Response> {
-        const users: User[] = UserManager.findAll();
+        const users: User[] = await UserManager.findAll();
         const usersJson: any[] = [];
         for(var i = 0; i < users.length; i++) {
             const user: User = users[i];

@@ -1,7 +1,7 @@
-import { RoleSpecification } from "mongodb";
 import UUID from "../../type/UUID";
 import { Role } from "../../role/model/Role";
 import { RoleManager } from "../../role/RoleManager";
+import { sign as signJWT } from 'jsonwebtoken';
 
 
 export class User {
@@ -52,9 +52,25 @@ export class User {
             totp_secret: this.totp_secret,
             totp_authenticated_at: this.totp_authenticated_at,
             role: this.role.id,
-            created_at: this.created_at.getMilliseconds()
+            created_at: this.created_at.toString()
         }
     }
+    public generateToken(): string {
+        const passData = {
+            id: this.id.toString()
+        }
+        const token = signJWT(
+            passData, 
+            process.env.JWT_SECRET!,
+            {
+                expiresIn: '1d'
+            }
+        );
+        return token;
+    }
+
+
+
     public static fromDocument(document: any): User {
         const user: User = new User(
             UUID.parseUUID(document.id),
@@ -65,7 +81,7 @@ export class User {
             document.password,
             document.language,
             RoleManager.getRole(document.role)!,
-            document.created_at,
+            new Date(document.created_at),
         );
         user.totp_secret = document.totp_secret;
         user.totp_authenticated_at = document.totp_authenticated_at;

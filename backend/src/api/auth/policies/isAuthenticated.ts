@@ -4,17 +4,13 @@ import { User } from '../../../user/model/User';
 
 const isAuthenticated = (req: Request, res: Response, next: NextFunction): void => {
   passport.authenticate('jwt', (err: any, user: User) => {
-    if(process.env.NODE_ENV == "development") {
-      next();
-      return;
-  }
     if (err || !user) {
       return res.status(401).send({
-        error: 'UNAUTHORIZED'
+        error: 'NOT_LOGGED_IN'
       });
     }
 
-    req.user = user;
+    req.bUser = user;
     next();
   })(req, res, next);
 };

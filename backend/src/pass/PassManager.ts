@@ -10,7 +10,7 @@ export class PassManager {
     private static passCache = new CacheMap<UUID, Pass>(1000 * 60 * 10);
     private static passCollection: Collection<Document>;
     public static loadData() {
-        this.passCollection =  DatabaseHandler.getDatabase().collection("users");
+        this.passCollection =  DatabaseHandler.getDatabase().collection("passes");
     }
     public static findById(id: UUID): Pass {
         if(this.passCache.has(id)) {
@@ -20,7 +20,18 @@ export class PassManager {
         this.passCache.set(id, user);
         return user;
     }
+    public static async findAll(): Promise<Pass[]> {
+        const passes: Pass[] = [];
+
+        await this.passCollection.find().forEach(document => {
+            passes.push(Pass.fromDocument(document));
+        });
+        return passes;
+    }
     public static createPass(pass: Pass) {
         this.passCache.set(pass.id, pass);
+        const filter = { id: pass.id };
+        const options = { upsert: true };
+        this.passCollection.findOneAndReplace(filter, pass.toDocument(), options);
     }
 }

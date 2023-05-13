@@ -1,4 +1,5 @@
 import UUID from "../../type/UUID";
+import { UserManager } from "../../user/UserManager";
 import { User } from "../../user/model/User";
 
 import { sign as signJWT } from 'jsonwebtoken';
@@ -51,19 +52,19 @@ export class Pass {
     public toDocument(): any {
         return {
             id: this.id,
-            issuedTo: this.issuedTo,
-            issuedBy: this.issuedBy,
+            issuedTo: this.issuedTo.id,
+            issuedBy: this.issuedBy.id,
             issuedAt: this.issuedAt,
     
             roomFrom: this.roomFrom,
             roomTo: this.roomTo
         }
     }
-    public static fromDocument(document: any): Pass {
+    public static async fromDocument(document: any): Promise<Pass> {
         return new Pass(
             document.id,
-            document.issuedTo,
-            document.issuedBy,
+            await UserManager.findById(document.issuedTo),
+            await UserManager.findById(document.issuedBy),
             document.issuedAt,
             document.roomFrom,
             document.roomTo

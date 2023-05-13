@@ -1,6 +1,6 @@
 // https://github.com/MinecraftJS/uuid
 
-import { randomUUID as cryptoUUID } from "crypto";
+import { randomUUID as cryptoUUID, randomBytes } from "crypto";
 
 /**
  * UUID Class
@@ -111,7 +111,7 @@ export default class UUID {
     return new UUID(mostSigBits, leastSigBits);
   }
   public static randomUUID(): UUID {
-    const uuid: string = cryptoUUID().replace("-", "");
+    const uuid: string = cryptoUUID().replace(/-/g, '');
     return new UUID(
       Buffer.from(uuid.slice(0, 16), 'hex'),
       Buffer.from(uuid.slice(16, 32), 'hex')

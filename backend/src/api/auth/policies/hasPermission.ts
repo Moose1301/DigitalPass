@@ -5,10 +5,6 @@ import { Permission } from '../../../role/model/Role';
 
 function hasPermission(permission: Permission) {
     return async (req: Request, res: Response, next: NextFunction) => {
-        if(process.env.NODE_ENV == "development") {
-            next();
-            return;
-        }
         if (req.bUser == null) {
             res.status(401).send({
                 error: 'UNAUTHORIZED'

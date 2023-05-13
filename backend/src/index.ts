@@ -4,11 +4,9 @@ import { start as startRestAPI } from './api/RestAPI';
 import { DatabaseHandler } from './database/DatabaseHandler';
 import { RoleManager } from './role/RoleManager';
 import { UserManager } from './user/UserManager';
-import { Role } from './role/model/Role';
-import { Pass } from './pass/model/Pass';
-import { randomUUID } from 'crypto';
-import { User } from './user/model/User';
 import UUID from './type/UUID';
+import { PassManager } from './pass/PassManager';
+
  
 if(process.env.SECRET_KEY == null || process.env.SECRET_KEY === "") {
     console.log("Please set a SECRET KEY as this is used for encryption")
@@ -21,7 +19,7 @@ console.log("Connecting to the Mongo Database");
 DatabaseHandler.connect().then(() => {  
     RoleManager.loadRoles();
     UserManager.loadData();
+    PassManager.loadData();
     console.log("Connected to the Mongo Database");
 });
-
 startRestAPI();

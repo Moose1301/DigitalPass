@@ -12,38 +12,28 @@ export class UserManager {
     private static userCollection: Collection<Document>;
     public static loadData() {
         this.userCollection = DatabaseHandler.getDatabase().collection("users");
-
-        hash("password", genSaltSync(10)).then((password: string) => {
-            const user: User = new User(
-                UUID.randomUUID(),
-                "Dev",
-                "dev@example.com",
-                "dev",
-                "dev",
-                password,
-                "en_US",
-                RoleManager.getRole("admin")!,
-                new Date()
-            )
-            this.usersCache.set(user.id, user);
-        });
-
     }
-    public static findById(id: UUID): User {
+    public static createUser(user: User) {
+        this.usersCache.set(user.id, user);
+        const filter = { id: user.id.toString() };
+        const options = { upsert: true };
+        this.userCollection.findOneAndReplace(filter, user.toDocument(), options);
+    }
+    public static async findById(id: UUID): Promise<User> {
         if (this.usersCache.has(id)) {
             return this.usersCache.get(id)!;
         }
-        const user: User = User.fromDocument(this.userCollection.findOne({ id: id.toString() }));
+        const user: User = User.fromDocument(await this.userCollection.findOne({ id: id.toString() }));
         this.usersCache.set(id, user);
         return user;
     }
 
-    public static findAll(): User[] {
+    public static async findAll(): Promise<User[]> {
         const users: User[] = [];
 
-        this.userCollection.find().forEach(document => {
+        await this.userCollection.find().forEach(document => {
             users.push(User.fromDocument(document));
-        })
+        });
         return users;
     }
 } 

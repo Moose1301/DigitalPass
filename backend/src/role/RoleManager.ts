@@ -6,12 +6,11 @@ import { Permission, Role } from "./model/Role";
 
 export class RoleManager {
     private static roles: Map<string, Role> = new Map();
-
-
+    private static collection: Collection<Document>
     public static async loadRoles() {
-        const collection: Collection<Document> = DatabaseHandler.getDatabase().collection("roles");
+        this.collection = DatabaseHandler.getDatabase().collection("roles");
 
-        const roles = collection.find();
+        const roles = this.collection.find();
 
         for await (const roleDocument of roles) {
             const role: Role = Role.fromDocument(roleDocument);
@@ -36,9 +35,8 @@ export class RoleManager {
         return this.roles.get(id);
     }
     public static saveRole(role: Role): void {
-        const collection: Collection<Document> = DatabaseHandler.getDatabase().collection("roles");
         const filter = { id: role.id };
         const options = { upsert: true };
-        collection.findOneAndReplace(filter, role.toDocument(), options);
+        this.collection.findOneAndReplace(filter, role.toDocument(), options);
     }
 }

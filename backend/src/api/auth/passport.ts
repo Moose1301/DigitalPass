@@ -2,6 +2,7 @@ import passport from 'passport';
 import { Strategy, ExtractJwt, VerifiedCallback } from 'passport-jwt';
 import { User } from '../../user/model/User';
 import { UserManager } from '../../user/UserManager';
+import UUID from '../../type/UUID';
 
 passport.use(
   new Strategy(
@@ -11,8 +12,7 @@ passport.use(
     },
     async (jwtPayload: any, done: VerifiedCallback) => {
       try {
-        const user = await UserManager.findById(jwtPayload.id);
-
+        const user = await UserManager.findById(UUID.parseUUID(jwtPayload.id));
         if (!user) {
           return done(new Error(), false);
         }
