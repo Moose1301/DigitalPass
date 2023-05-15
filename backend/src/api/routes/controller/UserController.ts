@@ -3,6 +3,8 @@ import { UserManager } from '../../../user/UserManager';
 import { User } from '../../../user/model/User';
 import UUID from '../../../type/UUID';
 import { userInfo } from 'os';
+import { generateSecret } from 'node-2fa';
+import { profile } from 'console';
 
 
 
@@ -53,6 +55,9 @@ export class UserController {
                 "error": "You already have TOTP enabled"
             });
         }
+        const secret = generateSecret();
+
+        
 
        
         
