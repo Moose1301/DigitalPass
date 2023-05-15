@@ -11,21 +11,40 @@ export class PassManager {
     private static passCollection: Collection<Document>;
     public static loadData() {
         this.passCollection =  DatabaseHandler.getDatabase().collection("passes");
+        
     }
-    public static findById(id: UUID): Pass {
+    public static async findById(id: UUID): Promise<Pass> {
         if(this.passCache.has(id)) {
             return this.passCache.get(id)!;
         }
-        const user: Pass = Pass.fromDocument(this.passCollection.findOne({ id: id.toString()}));
+        const user: Pass = await Pass.fromDocument(this.passCollection.findOne({ id: id.toString()}));
         this.passCache.set(id, user);
         return user;
     }
+    public static async findByIssuedTo(userID: UUID): Promise<Pass[]> {
+        const passes: Pass[] = [];
+        const documents = await this.passCollection.find({ issuedTo: userID.toString() });
+        for await(const document of documents) {
+            const pass = await Pass.fromDocument(document);
+            this.passCache.set(pass.id, pass, 1000 * 60);
+        }
+        return passes;
+    }
+    public static async findByIssuedBy(userID: UUID): Promise<Pass[]> {
+        const passes: Pass[] = [];
+        const documents = await this.passCollection.find({ issuedBy: userID.toString() });
+        for await(const document of documents) {
+            const pass = await Pass.fromDocument(document);
+            this.passCache.set(pass.id, pass, 1000 * 60);
+        }
+        return passes;
+    }
     public static async findAll(): Promise<Pass[]> {
         const passes: Pass[] = [];
-
-        await this.passCollection.find().forEach(document => {
-            passes.push(Pass.fromDocument(document));
-        });
+        const documents = await this.passCollection.find();
+        for await(const document of documents) {
+            passes.push(await Pass.fromDocument(document));
+        }
         return passes;
     }
     public static createPass(pass: Pass) {

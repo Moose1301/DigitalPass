@@ -12,9 +12,9 @@ router.get("/user/list", isAuthenticated, hasPermission(Permission.USER_LIST), U
 router.get("/user/:id", isAuthenticated, hasPermission(Permission.USER_LIST), UserController.getUser);
 router.get("/user", isAuthenticated, UserController.getSelf);
 
-
 router.get("/pass/list", isAuthenticated, hasPermission(Permission.PASS_LIST), PassController.getListPasses);
 router.post("/pass/generate", isAuthenticated, hasPermission(Permission.PASS_CREATE), PassController.postGeneratePass);
+router.get("/pass/:id", isAuthenticated, PassController.getListPasses);
 
 
 export = router;

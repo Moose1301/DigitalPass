@@ -1,5 +1,5 @@
 import UUID from "../../type/UUID";
-import { Role } from "../../role/model/Role";
+import { Permission, Role } from "../../role/model/Role";
 import { RoleManager } from "../../role/RoleManager";
 import { sign as signJWT } from 'jsonwebtoken';
 
@@ -87,5 +87,12 @@ export class User {
         user.totp_authenticated_at = document.totp_authenticated_at;
         return user;
     }
+    public hasPermission(permission: Permission): boolean {
+        return this.role.permissions.includes(permission);
+    }
+
+    public equals(obj: User) : boolean { 
+        return this.id === obj.id;
+    } 
     
 }

@@ -3,10 +3,28 @@ import { Pass } from '../../../pass/model/Pass';
 import { PassManager } from '../../../pass/PassManager';
 import UUID from '../../../type/UUID';
 import { UserManager } from '../../../user/UserManager';
+import { Permission } from '../../../role/model/Role';
 
 
 
 export class PassController {
+    public static async getPass(req: Request, res: Response, next: NextFunction): Promise<Response> {
+        const { id } = req.query;
+        const pass: Pass = await PassManager.findById(UUID.parseUUID(id as string));
+        if(pass == null) {
+            return res.status(404).json({
+                "error": "Pass with ID " + id + " not found"
+            })
+        }
+        if(!req.bUser.hasPermission(Permission.PASS_CHECK_OTHERS)) {
+            if(pass.issuedTo != req.bUser) {
+                return res.status(404).json({
+                    "error": "This is not your pass"
+                });
+            }
+        }
+        return res.status(200).json(pass);
+    }
     public static async getListPasses(req: Request, res: Response, next: NextFunction): Promise<Response> {
         const passes: Pass[] = await PassManager.findAll();
         const passesJson: any[] = [];
