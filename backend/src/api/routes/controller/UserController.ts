@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { UserManager } from '../../../user/UserManager';
 import { User } from '../../../user/model/User';
 import UUID from '../../../type/UUID';
+import { userInfo } from 'os';
 
 
 
@@ -39,10 +40,21 @@ export class UserController {
                 username: user.username,
                 first_name: user.name_first,
                 last_name: user.name_last,
-                role: user.role.id
+                role: user.role.id,
+                hasTotp: (user.totp_secret != undefined)
             })
         }
 
         return res.status(200).json(usersJson);
+    }
+    public static async generateTwoFactor(req: Request, res: Response, next: NextFunction): Promise<Response> {
+        if(req.bUser.totp_secret != undefined) {
+            return res.sendStatus(204).json({
+                "error": "You already have TOTP enabled"
+            });
+        }
+
+       
+        
     }
 }

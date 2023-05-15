@@ -1,6 +1,3 @@
-import { Document } from "mongodb";
-
-
 export enum Permission {
     USER_LIST = "USER_LIST",
     USER_CREATE = "USER_CREATE",
