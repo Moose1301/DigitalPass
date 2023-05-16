@@ -62,9 +62,11 @@ export class UserController {
 
         req.bUser.temp_totp_secret = secret.secret;
         req.bUser.temp_totp_type = json.type as TOTPType;
+        /*
         if(req.bUser.temp_totp_type == TOTPType.EMAIL) {
             UserManager.sendTOTPEmail(secret.secret);
         }
+        */
         return res.status(200).json({
             image: secret.qr,
             uri: secret.uri,
@@ -83,9 +85,9 @@ export class UserController {
         }
         const json = req.body;
 
-        const valid: boolean = verifyToken(req.bUser.temp_totp_secret, json.token) != null;
+        const verify: any | undefined = verifyToken(req.bUser.temp_totp_secret, json.token);
 
-        if(!valid) {
+        if(verify ==undefined || verify.delta == undefined) {
             return res.status(400).json({
                 error: "Invalid Token"
             });
@@ -93,6 +95,20 @@ export class UserController {
         req.bUser.totp_type = req.bUser.temp_totp_type;
         req.bUser.totp_secret = req.bUser.temp_totp_secret;
         return res.status(202);
+    }
+    public static async postRemoveSession(req: Request, res: Response, next: NextFunction): Promise<Response> {
+        const json = req.body;
+        const webSession = req.bUser.sessions.find(session => {
+            return session.tokenId == UUID.parseUUID(json.tokenId);
+        });
+        if(!webSession) {
+            return res.status(400).json({
+                error: "Invalid Session ID"
+            });
+        }
+        webSession.active = false;
+    
+        return res.status(200);
     }
 
 }

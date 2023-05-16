@@ -107,7 +107,7 @@ export class User {
             passData, 
             process.env.JWT_SECRET!,
             {
-                expiresIn: '1d'
+                expiresIn: '7d'
             }
         );
         return token;

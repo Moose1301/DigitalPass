@@ -19,7 +19,7 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction): void 
       });
     }
 
-    req.tokenId = tokenId;
+    req.tokenId = webSession;
     req.bUser = user;
     next();
   })(req, res, next);

@@ -20,6 +20,11 @@ export class UserManager {
         const options = { upsert: true };
         this.userCollection.findOneAndReplace(filter, user.toDocument(), options);
     }
+    public static async findByEmail(email: string): Promise<User> {
+        const user: User = User.fromDocument(await this.userCollection.findOne({ email: email }));
+        this.usersCache.set(user.id, user);
+        return user;
+    }
     public static async findById(id: UUID): Promise<User> {
         if (this.usersCache.has(id)) {
             return this.usersCache.get(id)!;
