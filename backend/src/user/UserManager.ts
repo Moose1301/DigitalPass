@@ -43,9 +43,5 @@ export class UserManager {
         return users;
     }
 
-    public static async sendTOTPEmail(secret: string) {
-        const token: string = generateToken(secret)!.token;
-
-        console.log("TODO WRITE SEND EMAIL CODE");
-    }
+  
 } 

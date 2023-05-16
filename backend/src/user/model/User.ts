@@ -4,7 +4,6 @@ import { RoleManager } from "../../role/RoleManager";
 import { sign as signJWT } from 'jsonwebtoken';
 
 export enum TOTPType {
-    EMAIL = "EMAIL",
     APPLICATION = "APPLICATION"
 }
 export class WebSession {
@@ -70,7 +69,9 @@ export class User {
         this.created_at = created_at;
         this.sessions = [];
     }
-
+    public getName(): string {
+        return this.name_first + " " + this.name_last;
+    }
     public toDocument(): any {
         return {
             id: this.id.toString(),

@@ -110,5 +110,9 @@ export class UserController {
     
         return res.status(200);
     }
-
+    public static async getSelfSessions(req: Request, res: Response, next: NextFunction): Promise<Response> {
+        return res.status(200).json({
+            sessions: req.bUser.sessions
+        });
+    }
 }

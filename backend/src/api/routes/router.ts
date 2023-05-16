@@ -15,7 +15,8 @@ router.get("auth/logout", isAuthenticated, AuthController.getLogout)
 router.get("/user/list", isAuthenticated, hasPermission(Permission.USER_LIST), UserController.getListUser);
 router.post("/user/totp/start", isAuthenticated, UserController.postStartTOTPEnable);
 router.post("/user/totp/enable", isAuthenticated, UserController.postTOTPEnable);
-router.post("/user/session", isAuthenticated, UserController.postRemoveSession);
+router.delete("/user/sessions/delete", isAuthenticated, UserController.postRemoveSession);
+router.get("/user/sessions", isAuthenticated, UserController.getSelfSessions)
 
 router.get("/user/:id", isAuthenticated, hasPermission(Permission.USER_LIST), UserController.getUser);
 router.get("/user", isAuthenticated, UserController.getSelf);
@@ -23,7 +24,7 @@ router.get("/user", isAuthenticated, UserController.getSelf);
 
 router.get("/pass/list", isAuthenticated, hasPermission(Permission.PASS_LIST), PassController.getListPasses);
 router.post("/pass/generate", isAuthenticated, hasPermission(Permission.PASS_CREATE), PassController.postGeneratePass);
+router.get("/pass/self", isAuthenticated, PassController.getSelfPasses)
 router.get("/pass/:id", isAuthenticated, PassController.getListPasses);
-
 
 export = router;

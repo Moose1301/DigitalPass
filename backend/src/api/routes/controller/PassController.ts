@@ -32,8 +32,8 @@ export class PassController {
             const pass: Pass = passes[i];
             passesJson.push({
                 id: pass.id,
-                issuedTo: pass.issuedTo.id,
-                issuedBy: pass.issuedBy.id,
+                issuedTo: pass.issuedTo.getName(),
+                issuedBy: pass.issuedBy.getName(),
                 issuedAt: pass.issuedAt,
 
                 roomFrom: pass.roomFrom,
@@ -58,6 +58,25 @@ export class PassController {
 
         return res.status(200).json({
             id: pass.id.toString()
+        })
+    }
+    public static async getSelfPasses(req: Request, res: Response, next: NextFunction): Promise<Response> {
+        const passes: Pass[] = await PassManager.findByIssuedTo(req.bUser.id);
+        const passesJson: any[] = [];
+        for(var i = 0; i < passes.length; i++) {
+            const pass: Pass = passes[i];
+            passesJson.push({
+                id: pass.id,
+                issuedTo: pass.issuedTo.getName(),
+                issuedBy: pass.issuedBy.getName(),
+                issuedAt: pass.issuedAt,
+
+                roomFrom: pass.roomFrom,
+                roomTo: pass.roomTo
+            })
+        }
+        return res.status(200).json({
+            passes: passesJson
         })
     }
 }
