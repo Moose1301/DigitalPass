@@ -5,6 +5,7 @@ import UUID from '../../../type/UUID';
 import { userInfo } from 'os';
 import { generateSecret, generateToken, verifyToken } from 'node-2fa';
 import { profile } from 'console';
+import { RoleManager } from '../../../role/RoleManager';
 
 
 
@@ -114,5 +115,25 @@ export class UserController {
         return res.status(200).json({
             sessions: req.bUser.sessions
         });
+    }
+
+    public static async postCreateUser(req: Request, res: Response, next: NextFunction): Promise<Response> {
+        const { email, username, password, name_first, name_last, language } = req.body;
+
+        const createdUser: User = new User(
+            UUID.randomUUID(),
+            username,
+            email,
+            name_first,
+            name_last,
+            password,
+            language,
+            RoleManager.getDefaultRole()!,
+            new Date()
+        );
+        UserManager.createUser(createdUser);
+        return res.status(200).json({
+            id: createdUser.id
+        })
     }
 }

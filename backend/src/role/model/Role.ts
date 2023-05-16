@@ -37,6 +37,7 @@ export class Role {
     public name: string;
     public weight: number;
     public requiresTOTP: boolean;
+    public default: boolean;
     public permissions: Permission[];
 
 
@@ -45,11 +46,13 @@ export class Role {
         name: string,
         weight: number,
         requiresTOTP: boolean,
+        defaultRole: boolean,
         permissions: Permission[]
     ) {
         this.id = id;
         this.name = name;
         this.weight = weight;
+        this.default = defaultRole;
         this.requiresTOTP = requiresTOTP;
         this.permissions = permissions;
     }
@@ -59,16 +62,22 @@ export class Role {
             name: this.name,
             weight: this.weight,
             requiresTOTP: this.requiresTOTP,
+            default: this.default,
             permissions: this.permissions
         };
     }
 
     public static fromDocument(document: any): Role {
+        var defaultRole = document.defaultRole as boolean;
+        if(defaultRole == undefined) {
+            defaultRole = false;
+        }
         return new Role(
             document.id,
             document.name,
             document.weight,
             document.requiresTOTP,
+            defaultRole,
             document.permissions
         );
     }
