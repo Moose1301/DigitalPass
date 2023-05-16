@@ -18,7 +18,7 @@ export class PassController {
         }
         if(!req.bUser.hasPermission(Permission.PASS_CHECK_OTHERS)) {
             if(pass.issuedTo != req.bUser) {
-                return res.status(404).json({
+                return res.status(401).json({
                     "error": "This is not your pass"
                 });
             }

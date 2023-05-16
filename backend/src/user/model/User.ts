@@ -7,6 +7,27 @@ export enum TOTPType {
     EMAIL = "EMAIL",
     APPLICATION = "APPLICATION"
 }
+export class WebSession {
+    public tokenId: UUID;
+    public ip: string;
+    public loggedInAt: Date;
+    public tokenExpire: Date;
+    public active: boolean = false;
+    constructor(
+        tokenid: UUID,
+        ip: string,
+        loggedInAt: Date,
+        tokenExpire: Date
+    ) {
+        this.tokenId = tokenid;
+        this.ip = ip;
+        this.loggedInAt = loggedInAt;
+        this.tokenExpire = tokenExpire;
+    }
+    public isValid(): boolean {
+        return this.active && Date.now() < this.tokenExpire.getMilliseconds();
+    }
+}
 
 export class User {
     public id: UUID;
@@ -18,14 +39,14 @@ export class User {
     public language: string;
     public totp_secret: string | undefined;
     public totp_type: TOTPType | undefined;
-    public totp_authenticated_at: number | undefined;
+    public totp_authenticated_at: Date | undefined;
     public role: Role;
     public created_at: Date;
 
     //Used for when setting up TOTP so the user doesn't lock themselfs out
     public temp_totp_type: TOTPType | undefined;
     public temp_totp_secret: string | undefined;
-
+    public sessions: WebSession[]
 
     constructor(
         id: UUID,
@@ -47,6 +68,7 @@ export class User {
         this.language = language;
         this.role = role;
         this.created_at = created_at;
+        this.sessions = [];
     }
 
     public toDocument(): any {
@@ -62,13 +84,25 @@ export class User {
             totp_type: this.totp_type,
             totp_authenticated_at: this.totp_authenticated_at,
             role: this.role.id,
-            created_at: this.created_at.toString()
+            created_at: this.created_at.toString(),
+            sessions: this.sessions
         }
     }
-    public generateToken(): string {
+    public generateAuthToken(authIp: string): string {
+        const tokenId = UUID.randomUUID();
         const passData = {
+            tokenId: tokenId.toString(),
             id: this.id.toString()
         }
+        const expireTime = new Date();
+        expireTime.setDate(expireTime.getDate() + 7);
+        this.sessions.push(new WebSession(
+            tokenId,
+            authIp,
+            new Date(),
+            expireTime
+        ));
+
         const token = signJWT(
             passData, 
             process.env.JWT_SECRET!,
@@ -96,6 +130,10 @@ export class User {
         user.totp_secret = document.totp_secret;
         user.totp_authenticated_at = document.totp_authenticated_at;
         user.totp_type = document.totp_type as TOTPType;
+        user.sessions = document.sessions;
+        user.sessions = user.sessions.filter(function( session: WebSession ) {
+            return session.isValid();
+        });
         return user;
     }
     public hasPermission(permission: Permission): boolean {

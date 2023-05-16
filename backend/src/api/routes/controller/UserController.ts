@@ -54,7 +54,7 @@ export class UserController {
 
         
         if(req.bUser.totp_secret != undefined) {
-            return res.status(204).json({
+            return res.status(400).json({
                 error: "You already have TOTP enabled"
             });
         }
@@ -73,7 +73,7 @@ export class UserController {
     }
     public static async postTOTPEnable(req: Request, res: Response, next: NextFunction): Promise<Response> {
         if(req.bUser.totp_secret != undefined) {
-            return res.status(204).json({
+            return res.status(400).json({
                 error: "You already have TOTP enabled"
             });
         } else if(req.bUser.temp_totp_secret == undefined) {
