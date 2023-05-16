@@ -5,6 +5,7 @@ import { CacheMap } from "../utils/CacheMap";
 import { genSaltSync, hash } from "bcrypt";
 import { RoleManager } from "../role/RoleManager";
 import UUID from "../type/UUID";
+import { generateToken } from "node-2fa";
 
 
 export class UserManager {
@@ -35,5 +36,11 @@ export class UserManager {
             users.push(User.fromDocument(document));
         });
         return users;
+    }
+
+    public static async sendTOTPEmail(secret: string) {
+        const token: string = generateToken(secret)!.token;
+
+        console.log("TODO WRITE SEND EMAIL CODE");
     }
 } 

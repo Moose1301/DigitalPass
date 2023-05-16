@@ -3,6 +3,10 @@ import { Permission, Role } from "../../role/model/Role";
 import { RoleManager } from "../../role/RoleManager";
 import { sign as signJWT } from 'jsonwebtoken';
 
+export enum TOTPType {
+    EMAIL = "EMAIL",
+    APPLICATION = "APPLICATION"
+}
 
 export class User {
     public id: UUID;
@@ -12,10 +16,15 @@ export class User {
     public name_last: string;
     public password: string;
     public language: string;
-    public totp_secret: string | undefined
+    public totp_secret: string | undefined;
+    public totp_type: TOTPType | undefined;
     public totp_authenticated_at: number | undefined;
     public role: Role;
     public created_at: Date;
+
+    //Used for when setting up TOTP so the user doesn't lock themselfs out
+    public temp_totp_type: TOTPType | undefined;
+    public temp_totp_secret: string | undefined;
 
 
     constructor(
@@ -50,6 +59,7 @@ export class User {
             password: this.password,
             language: this.language,
             totp_secret: this.totp_secret,
+            totp_type: this.totp_type,
             totp_authenticated_at: this.totp_authenticated_at,
             role: this.role.id,
             created_at: this.created_at.toString()
@@ -85,6 +95,7 @@ export class User {
         );
         user.totp_secret = document.totp_secret;
         user.totp_authenticated_at = document.totp_authenticated_at;
+        user.totp_type = document.totp_type as TOTPType;
         return user;
     }
     public hasPermission(permission: Permission): boolean {

@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { UserManager } from '../../../user/UserManager';
-import { User } from '../../../user/model/User';
+import { TOTPType, User } from '../../../user/model/User';
 import UUID from '../../../type/UUID';
 import { userInfo } from 'os';
-import { generateSecret } from 'node-2fa';
+import { generateSecret, generateToken, verifyToken } from 'node-2fa';
 import { profile } from 'console';
 
 
@@ -49,17 +49,50 @@ export class UserController {
 
         return res.status(200).json(usersJson);
     }
-    public static async generateTwoFactor(req: Request, res: Response, next: NextFunction): Promise<Response> {
+    public static async postStartTOTPEnable(req: Request, res: Response, next: NextFunction): Promise<Response> {
+        const json = req.body;
+
+        
         if(req.bUser.totp_secret != undefined) {
-            return res.sendStatus(204).json({
-                "error": "You already have TOTP enabled"
+            return res.status(204).json({
+                error: "You already have TOTP enabled"
             });
         }
         const secret = generateSecret();
 
-        
-
-       
-        
+        req.bUser.temp_totp_secret = secret.secret;
+        req.bUser.temp_totp_type = json.type as TOTPType;
+        if(req.bUser.temp_totp_type == TOTPType.EMAIL) {
+            UserManager.sendTOTPEmail(secret.secret);
+        }
+        return res.status(200).json({
+            image: secret.qr,
+            uri: secret.uri,
+            secret: secret.secret
+        });        
     }
+    public static async postTOTPEnable(req: Request, res: Response, next: NextFunction): Promise<Response> {
+        if(req.bUser.totp_secret != undefined) {
+            return res.status(204).json({
+                error: "You already have TOTP enabled"
+            });
+        } else if(req.bUser.temp_totp_secret == undefined) {
+            return res.status(400).json({
+                error: "You are not setting up TOTP"
+            });
+        }
+        const json = req.body;
+
+        const valid: boolean = verifyToken(req.bUser.temp_totp_secret, json.token) != null;
+
+        if(!valid) {
+            return res.status(400).json({
+                error: "Invalid Token"
+            });
+        }
+        req.bUser.totp_type = req.bUser.temp_totp_type;
+        req.bUser.totp_secret = req.bUser.temp_totp_secret;
+        return res.status(202);
+    }
+
 }
