@@ -17,7 +17,7 @@ export class AuthController {
             });
             return;
         }
-        const user: User = await UserManager.findByEmail(email);
+        const user: User = await UserManager.findByEmail(email as string);
         if(!user == undefined) {
             res.status(400).send({
                 error: "User or Password Invalid"
@@ -26,7 +26,7 @@ export class AuthController {
         }
         const requiresTwoFactor = user.totp_secret != undefined;
         const ip = req.headers['CF-Connecting-IP'] || req.socket.remoteAddress;
-        const isPasswordValid = await compare(password, user.password);
+        const isPasswordValid = await compare(password as string, user.password);
         if(!isPasswordValid) {
             res.status(400).send({
                 error: "User or Password Invalid"
@@ -34,13 +34,13 @@ export class AuthController {
             return;
         }
         if(requiresTwoFactor) {
-            if(token == undefined || token.length < 6) {
+            if(token == undefined || (token as string).length < 6) {
                 res.status(400).send({
                     error: "2fa Token invalid"
                 });
                 return;
             }
-            const tokenValidation = verifyToken(user.totp_secret!, token);
+            const tokenValidation = verifyToken(user.totp_secret!, token as string);
             if(tokenValidation == undefined || tokenValidation.delta == undefined) {
                 res.status(400).send({
                     error: "2fa Token invalid"
