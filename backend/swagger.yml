@@ -134,7 +134,7 @@ paths:
       operationId: deleteSession
       requestBody:
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               type: object
               properties:
@@ -206,7 +206,7 @@ paths:
         '200':
           description: ''
   /auth/login:
-    get:
+    post:
       tags:
         - Auth
       summary: Login
