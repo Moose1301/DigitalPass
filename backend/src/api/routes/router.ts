@@ -9,8 +9,8 @@ import { AuthController } from './controller/AuthController';
 
 const router = express.Router();
 
-router.get("auth/login", AuthController.getLogin)
-router.get("auth/logout", isAuthenticated, AuthController.getLogout)
+router.get("/auth/login", AuthController.getLogin)
+router.get("/auth/logout", isAuthenticated, AuthController.getLogout)
 
 router.post("/user/create", isAuthenticated, hasPermission(Permission.USER_CREATE), UserController.postCreateUser);
 router.get("/user/list", isAuthenticated, hasPermission(Permission.USER_LIST), UserController.getListUser);
