@@ -1,0 +1,236 @@
+openapi: 3.0.3
+info:
+  title: DigitalPass
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: http://localhost
+paths:
+  /user/list:
+    get:
+      tags:
+        - User
+      summary: List
+      description: List
+      operationId: list
+      responses:
+        '200':
+          description: ''
+  /user:
+    get:
+      tags:
+        - User
+      summary: Get Self
+      description: Get Self
+      operationId: getSelf
+      responses:
+        '200':
+          description: ''
+  /user/create:
+    post:
+      tags:
+        - User
+      summary: Create
+      description: Create
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: dev@dev.com
+                language:
+                  type: string
+                  example: en_US
+                name_first:
+                  type: string
+                  example: dev
+                name_last:
+                  type: string
+                  example: dev
+                password:
+                  type: string
+                  example: dev
+                username:
+                  type: string
+                  example: dev
+            example:
+              email: dev@dev.com
+              language: en_US
+              name_first: dev
+              name_last: dev
+              password: dev
+              username: dev
+      responses:
+        '200':
+          description: ''
+  /user/a16929ae-8b5d-4c68-8c2b-9f8a2c3e4f2d:
+    get:
+      tags:
+        - User
+      summary: Get
+      description: Get
+      operationId: get
+      requestBody:
+        content:
+          text/plain:
+            example: ''
+      responses:
+        '200':
+          description: ''
+  /user/totp/start:
+    post:
+      tags:
+        - User
+      summary: TOTP Start
+      description: TOTP Start
+      operationId: totpStart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  example: APPLICATION
+            example:
+              type: APPLICATION
+      responses:
+        '200':
+          description: ''
+  /user/totp/enable:
+    post:
+      tags:
+        - User
+      summary: TOTP Enable
+      description: TOTP Enable
+      operationId: totpEnable
+      requestBody:
+        content:
+          text/plain:
+            example: "{\r\n    \"token\": 00000\r\n}"
+      responses:
+        '200':
+          description: ''
+  /user/sessions:
+    get:
+      tags:
+        - User
+      summary: List Sessions
+      description: List Sessions
+      operationId: listSessions
+      responses:
+        '200':
+          description: ''
+    delete:
+      tags:
+        - User
+      summary: Delete Session
+      description: Delete Session
+      operationId: deleteSession
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tokenId:
+                  type: string
+                  example: 54c2a207-3ea9-4ee5-88b4-93b7ba03e439
+            example:
+              tokenId: 54c2a207-3ea9-4ee5-88b4-93b7ba03e439
+      responses:
+        '200':
+          description: ''
+  /pass/list:
+    get:
+      tags:
+        - Pass
+      summary: List
+      description: List
+      operationId: list1
+      responses:
+        '200':
+          description: ''
+  /pass/generate:
+    post:
+      tags:
+        - Pass
+      summary: Generate
+      description: Generate
+      operationId: generate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                issuedTo:
+                  type: string
+                  example: a16929ae-8b5d-4c68-8c2b-9f8a2c3e4f2d
+                roomFrom:
+                  type: string
+                  example: Testing123
+                roomTo:
+                  type: string
+                  example: 123Testing
+            example:
+              issuedTo: a16929ae-8b5d-4c68-8c2b-9f8a2c3e4f2d
+              roomFrom: Testing123
+              roomTo: 123Testing
+      responses:
+        '200':
+          description: ''
+  /pass/self:
+    get:
+      tags:
+        - Pass
+      summary: Get Self
+      description: Get Self
+      operationId: getSelf1
+      responses:
+        '200':
+          description: ''
+  /pass/5c68e892-008b-44bb-a6c5-e8f022f9a36e:
+    get:
+      tags:
+        - Pass
+      summary: Get ID
+      description: Get ID
+      operationId: getId
+      responses:
+        '200':
+          description: ''
+  /auth/login:
+    get:
+      tags:
+        - Auth
+      summary: Login
+      description: Login
+      operationId: login
+      requestBody:
+        content:
+          text/plain:
+            example: "{\r\n    \"email\" :\"dev@dev.com\",\r\n    \"password\": \"password\",\r\n    \"token\": 00000 ## Only need if user has TWO on\r\n}"
+      responses:
+        '200':
+          description: ''
+  /auth/logout:
+    get:
+      tags:
+        - Auth
+      summary: New Request
+      description: New Request
+      operationId: newRequest
+      responses:
+        '200':
+          description: ''
+tags:
+  - name: User
+  - name: Role
+  - name: Pass
+  - name: Auth

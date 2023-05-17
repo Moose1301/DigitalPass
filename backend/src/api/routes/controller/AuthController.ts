@@ -9,7 +9,7 @@ import { error } from 'console';
 export class AuthController {
 
     public static async getLogin(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const { email, password, token } = req.body;
+        const { email, password, token } = req.query;
 
         if(!email || !password) {
             res.status(400).send({

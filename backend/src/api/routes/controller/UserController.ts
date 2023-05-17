@@ -98,9 +98,9 @@ export class UserController {
         return res.status(202);
     }
     public static async postRemoveSession(req: Request, res: Response, next: NextFunction): Promise<Response> {
-        const json = req.body;
+        const { tokenId } = req.query;
         const webSession = req.bUser.sessions.find(session => {
-            return session.tokenId == UUID.parseUUID(json.tokenId);
+            return session.tokenId == UUID.parseUUID(tokenId as string);
         });
         if(!webSession) {
             return res.status(400).json({
