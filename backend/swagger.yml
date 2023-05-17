@@ -235,9 +235,9 @@ paths:
     get:
       tags:
         - Auth
-      summary: New Request
-      description: New Request
-      operationId: newRequest
+      summary: Logout
+      description: Logout
+      operationId: logout
       responses:
         '200':
           description: ''
