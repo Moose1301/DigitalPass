@@ -16,7 +16,7 @@ router.post("/user/create", isAuthenticated, hasPermission(Permission.USER_CREAT
 router.get("/user/list", isAuthenticated, hasPermission(Permission.USER_LIST), UserController.getListUser);
 router.post("/user/totp/start", isAuthenticated, UserController.postStartTOTPEnable);
 router.post("/user/totp/enable", isAuthenticated, UserController.postTOTPEnable);
-router.delete("/user/sessions/delete", isAuthenticated, UserController.postRemoveSession);
+router.delete("/user/sessions", isAuthenticated, UserController.postRemoveSession);
 router.get("/user/sessions", isAuthenticated, UserController.getSelfSessions)
 router.get("/user/:id", isAuthenticated, hasPermission(Permission.USER_LIST), UserController.getUser);
 router.get("/user", isAuthenticated, UserController.getSelf);
