@@ -67,7 +67,7 @@ paths:
       responses:
         '200':
           description: ''
-  /user/a16929ae-8b5d-4c68-8c2b-9f8a2c3e4f2d:
+  /user/{userId}:
     get:
       tags:
         - User
@@ -81,6 +81,12 @@ paths:
       responses:
         '200':
           description: ''
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
   /user/totp/start:
     post:
       tags:
@@ -195,7 +201,7 @@ paths:
       responses:
         '200':
           description: ''
-  /pass/5c68e892-008b-44bb-a6c5-e8f022f9a36e:
+  /pass/{passId}:
     get:
       tags:
         - Pass
@@ -205,6 +211,12 @@ paths:
       responses:
         '200':
           description: ''
+    parameters:
+      - name: passId
+        in: path
+        required: true
+        schema:
+          type: string
   /auth/login:
     post:
       tags:
