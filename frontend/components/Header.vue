@@ -1,5 +1,5 @@
 <template>
-  <nav class="fixed w-full p-6 bg-slate-500">
+  <nav class="flex w-full p-6 bg-slate-500">
     <div class="md:hidden">
       <button @click="drawer">
         <svg

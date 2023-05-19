@@ -43,9 +43,14 @@ export default {
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {
-    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
+
+  proxy: {
+    '/api/': {
+      target: process.env.API_URL,
+      pathRewrite: { 
+        '^/api/': '/'
+      }
+    }
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
@@ -62,16 +67,16 @@ export default {
           property: false
         },
         endpoints: {
-          login: { url: '/auth/login', method: 'post'},
-          user: { url: '/user', method: 'get'},
-          logout: { url: '/logout', method: 'get' }
+          login: { url: '/api/auth/login', method: 'post'},
+          user: { url: '/api/user', method: 'get'},
+          logout: { url: '/api/logout', method: 'get' }
         }
       }
     }
   },
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: process.env.BASE_URL
+    proxy: true
   },
   server: {
     port: process.env.PORT || 3000

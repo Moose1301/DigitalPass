@@ -4,7 +4,6 @@
       <div class="content full login">
         <div class="section-wrap">
           <div class="section-content">
-            <h1 class="pageTitle">Login</h1>
             <form>
               <div class="form-group">
                 <label>Email</label>
