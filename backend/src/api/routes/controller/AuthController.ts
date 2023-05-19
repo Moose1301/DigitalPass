@@ -9,7 +9,7 @@ import { error } from 'console';
 export class AuthController {
 
     public static async getLogin(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const { email, password, token } = req.query;
+        const { email, password, token } = req.body;
 
         if(!email || !password) {
             res.status(400).send({
@@ -17,16 +17,16 @@ export class AuthController {
             });
             return;
         }
-        const user: User = await UserManager.findByEmail(email as string);
+        const user: User | undefined = await UserManager.findByEmail(email as string);
         if(!user == undefined) {
             res.status(400).send({
                 error: "User or Password Invalid"
             });
             return;
         }
-        const requiresTwoFactor = user.totp_secret != undefined;
+        const requiresTwoFactor = user!.totp_secret != undefined;
         const ip = req.headers['CF-Connecting-IP'] || req.socket.remoteAddress;
-        const isPasswordValid = await compare(password as string, user.password);
+        const isPasswordValid = await compare(password as string, user!.password);
         if(!isPasswordValid) {
             res.status(400).send({
                 error: "User or Password Invalid"
@@ -40,7 +40,7 @@ export class AuthController {
                 });
                 return;
             }
-            const tokenValidation = verifyToken(user.totp_secret!, token as string);
+            const tokenValidation = verifyToken(user!.totp_secret!, token as string);
             if(tokenValidation == undefined || tokenValidation.delta == undefined) {
                 res.status(400).send({
                     error: "2fa Token invalid"
@@ -48,11 +48,11 @@ export class AuthController {
                 return;
             }
         }
-        req.login(user, { session: false}, async (error) => {
+        req.login(user!, { session: false}, async (error) => {
             if(error) {
                 return next(error);
             }
-            return res.status(200).send(user.generateAuthToken(ip! as string))
+            return res.status(200).send(user!.generateAuthToken(ip! as string))
         });
 
     }

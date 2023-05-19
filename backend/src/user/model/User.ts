@@ -2,6 +2,7 @@ import UUID from "../../type/UUID";
 import { Permission, Role } from "../../role/model/Role";
 import { RoleManager } from "../../role/RoleManager";
 import { sign as signJWT } from 'jsonwebtoken';
+import { UserManager } from "../UserManager";
 
 export enum TOTPType {
     APPLICATION = "APPLICATION"
@@ -25,6 +26,18 @@ export class WebSession {
     }
     public isValid(): boolean {
         return this.active && Date.now() < this.tokenExpire.getMilliseconds();
+    }
+    public static fromJson(json: any): WebSession {
+        const session: WebSession = new WebSession(
+            json.tokenId,
+            json.ip,
+            new Date(json.loggedInAt),
+            new Date(json.tokenExpire),
+        );
+        session.active = json.active;
+
+        return session;
+       
     }
 }
 
@@ -86,7 +99,7 @@ export class User {
             totp_authenticated_at: this.totp_authenticated_at,
             role: this.role.id,
             created_at: this.created_at.toString(),
-            sessions: this.sessions
+            sessions: JSON.stringify(this.sessions)
         }
     }
     public generateAuthToken(authIp: string): string {
@@ -97,13 +110,15 @@ export class User {
         }
         const expireTime = new Date();
         expireTime.setDate(expireTime.getDate() + 7);
-        this.sessions.push(new WebSession(
+        const session: WebSession = new WebSession(
             tokenId,
             authIp,
             new Date(),
             expireTime
-        ));
-
+        );
+        session.active = true;
+        
+        this.sessions.push(session);
         const token = signJWT(
             passData, 
             process.env.JWT_SECRET!,
@@ -111,12 +126,14 @@ export class User {
                 expiresIn: '7d'
             }
         );
+        UserManager.updateCache(this);
         return token;
     }
 
 
 
     public static fromDocument(document: any): User {
+
         const user: User = new User(
             UUID.parseUUID(document.id),
             document.username,
@@ -131,10 +148,19 @@ export class User {
         user.totp_secret = document.totp_secret;
         user.totp_authenticated_at = document.totp_authenticated_at;
         user.totp_type = document.totp_type as TOTPType;
-        user.sessions = document.sessions;
+
+        const sessionsJson = JSON.parse(document.sessions);
+
+        const sessions = [];
+        for(const session in sessionsJson) {
+            sessions.push(WebSession.fromJson(sessionsJson[session]));
+        }
+        user.sessions = sessions;
+        
         user.sessions = user.sessions.filter(function( session: WebSession ) {
-            return session.isValid();
+            return !session.isValid();
         });
+        
         return user;
     }
     public hasPermission(permission: Permission): boolean {

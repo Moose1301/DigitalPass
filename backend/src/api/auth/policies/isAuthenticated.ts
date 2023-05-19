@@ -14,6 +14,7 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction): void 
       return session.tokenId == tokenId;
     });
     if(!webSession) {
+
       return res.status(401).send({
         error: 'NOT_LOGGED_IN'
       });

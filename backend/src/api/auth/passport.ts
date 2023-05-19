@@ -19,7 +19,7 @@ passport.use(
 
         return done(null, user, UUID.parseUUID(jwtPayload.tokenId));
       } catch (err) {
-        return done(new Error(), false);
+        return done(err, false);
       }
     }
   )
