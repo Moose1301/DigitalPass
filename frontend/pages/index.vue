@@ -1,7 +1,7 @@
 <template>
   <div id="content" class="with-sidebar">
     <div class="container">
-      Test
+      Test 123
     </div>
   </div>
 </template>

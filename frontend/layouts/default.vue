@@ -1,6 +1,6 @@
 <template>
     <div id="page" :class="page == 'index' ? 'home' : ''">
-        <Header/>
+        <!--<Header/>-->
         <Nuxt/>
     </div>
 </template>

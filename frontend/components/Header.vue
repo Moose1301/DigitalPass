@@ -34,7 +34,7 @@
                 cta hover:border-b-2
                 hover:bg-blue-500 px-3 py-2 
                 rounded text-zinc-200 
-                font-semibold"
+                font-semibold px-4 py-2"
                 >`$auth.user.name_first`</a
               >
             </NuxtLink>
@@ -47,7 +47,8 @@
               hover:border-b-2 
               border-blue-500 pb-1
               hover:text-zinc-100 
-              text-right text-zinc-200">Sign In</a>
+              text-right text-zinc-200
+              px-4 py-2">Sign In</a>
             </a>
           </li>
         </NuxtLink>

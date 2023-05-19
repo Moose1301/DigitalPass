@@ -51,14 +51,7 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   },
-  proxy: {
-    '/api/': {
-      target: process.env.API_URL,
-      pathRewrite: {
-        '^/api/': '',
-      },
-    },
-  },
+
   auth: {
     strategies: {
       local: {
