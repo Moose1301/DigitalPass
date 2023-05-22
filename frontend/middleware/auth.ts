@@ -1,5 +1,8 @@
 import { Context } from '@nuxt/types';
 
 export default function ({ $auth, redirect }: Context) {
-  if (!$auth.loggedIn) return redirect('/login');
+
+  if (!$auth.loggedIn) {
+    return redirect("/login");
+  }
 }

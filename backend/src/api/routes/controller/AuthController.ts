@@ -18,7 +18,7 @@ export class AuthController {
             return;
         }
         const user: User | undefined = await UserManager.findByEmail(email as string);
-        if(!user == undefined) {
+        if(user == undefined) {
             res.status(400).send({
                 error: "User or Password Invalid"
             });

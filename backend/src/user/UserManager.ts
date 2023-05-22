@@ -11,7 +11,7 @@ export class UserManager {
     private static userCollection: Collection<Document>;
     public static async loadData() {
         this.userCollection = DatabaseHandler.getDatabase().collection("users");
-   
+
     }
     public static createUser(user: User) {
         this.usersCache.set(user.id, user);

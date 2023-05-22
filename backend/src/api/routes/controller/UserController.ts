@@ -16,7 +16,8 @@ export class UserController {
             email: req.bUser.email,
             name_first: req.bUser.name_first,
             name_last: req.bUser.name_last,
-            language: req.bUser.language
+            language: req.bUser.language,
+            permissions: req.bUser.role.permissions
         });
     }
     public static async getUser(req: Request, res: Response, next: NextFunction): Promise<Response> {

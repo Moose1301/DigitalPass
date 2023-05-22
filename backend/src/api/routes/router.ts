@@ -27,4 +27,6 @@ router.post("/pass/generate", isAuthenticated, hasPermission(Permission.PASS_CRE
 router.get("/pass/self", isAuthenticated, PassController.getSelfPasses)
 router.get("/pass/:id", isAuthenticated, PassController.getListPasses);
 
+
+
 export = router;

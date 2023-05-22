@@ -19,7 +19,7 @@
     <div class="hidden md:block">
       <ul class="flex space-x-8 text-sm font-sans">
         <li>
-          <a href="#" class="
+          <a href="/" class="
           active hover:border-b-2 
           hover:text-zinc-100 
           border-blue-500 pb-1 text-zinc-200">Home
@@ -35,7 +35,7 @@
                 hover:bg-blue-500 px-3 py-2 
                 rounded text-zinc-200 
                 font-semibold px-4 py-2"
-                >`$auth.user.name_first`</a
+                >{{ $auth.user.name_first }}</a
               >
             </NuxtLink>
           </li>
@@ -109,7 +109,7 @@
       <!--Side Bar Pop out-->
       <ul class="divide-y font-sans">
         <li>
-          <a href="#" 
+          <a href="." 
           @click="isOpen = false" 
           class="
           my-4 inline-block text-zinc-200
@@ -127,7 +127,7 @@
                 px-3 py-2 rounded 
                 hover:text-zinc-100
                 text-zinc-200 font-semibold"
-                >`$auth.user.name_first`</a
+                >{{$auth.user.name_first}}</a
               >
             </NuxtLink>
           </template>
