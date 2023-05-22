@@ -7,11 +7,7 @@
 <script>
 
 export default {
-    middleware({ $auth, redirect }) {
+    middleware: ['auth']
 
-    if (!$auth.loggedIn) {
-      console.log($auth)
-    }
-  }
 }
 </script>
