@@ -19,7 +19,18 @@ export default {
       .get("/pass/" + this.$route.params.id)
       .then((r) => {
         return r.data;
-      })
+      }).catch((err) => {
+        console.log(err.response.data)
+        return {
+          error: err.response.data.error
+        }
+      });
+      if(pass == undefined || pass.error !== undefined) {
+        console.log("Error", pass.error);
+
+        this.$router.push("/profile")
+        return; 
+      }
     this.pass = pass;
   }
 }

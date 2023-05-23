@@ -131,4 +131,7 @@ export default class UUID {
       uuid.slice(20, 32)
     );
   }
+  public equals(uuid: UUID): boolean {
+    return this.toString() === uuid.toString();
+  }
 }

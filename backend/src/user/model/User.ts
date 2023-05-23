@@ -168,7 +168,7 @@ export class User {
     }
 
     public equals(obj: User) : boolean { 
-        return this.id === obj.id;
+        return this.id.equals(obj.id);
     } 
-    
+     
 }
