@@ -3,21 +3,26 @@ import { DatabaseHandler } from "../database/DatabaseHandler";
 import { CacheMap } from "../utils/CacheMap";
 import { Pass } from "./model/Pass";
 import UUID from "../type/UUID";
+import { UserManager } from "../user/UserManager";
+import { User } from "../user/model/User";
 
 
 
 export class PassManager {
     private static passCache = new CacheMap<UUID, Pass>(1000 * 60 * 10);
     private static passCollection: Collection<Document>;
-    public static loadData() {
+    public static async loadData() {
         this.passCollection =  DatabaseHandler.getDatabase().collection("passes");
-        
+    
     }
-    public static async findById(id: UUID): Promise<Pass> {
+    public static async findById(id: UUID): Promise<Pass | undefined> {
         if(this.passCache.has(id)) {
             return this.passCache.get(id)!;
         }
-        const user: Pass = await Pass.fromDocument(this.passCollection.findOne({ id: id.toString()}));
+        const user: Pass | undefined = await Pass.fromDocument(await this.passCollection.findOne({ id: id.toString() }));
+        if(user == undefined) {
+            return undefined;
+        }
         this.passCache.set(id, user);
         return user;
     }
@@ -26,6 +31,10 @@ export class PassManager {
         const documents = await this.passCollection.find({ issuedTo: userID.toString() });
         for await(const document of documents) {
             const pass = await Pass.fromDocument(document);
+            if(pass == undefined) {
+                continue;
+            }
+            passes.push(pass);
             this.passCache.set(pass.id, pass, 1000 * 60);
         }
         return passes;
@@ -35,6 +44,10 @@ export class PassManager {
         const documents = await this.passCollection.find({ issuedBy: userID.toString() });
         for await(const document of documents) {
             const pass = await Pass.fromDocument(document);
+            if(pass == undefined) {
+                continue;
+            }
+            passes.push(pass);
             this.passCache.set(pass.id, pass, 1000 * 60);
         }
         return passes;
@@ -43,7 +56,11 @@ export class PassManager {
         const passes: Pass[] = [];
         const documents = await this.passCollection.find();
         for await(const document of documents) {
-            passes.push(await Pass.fromDocument(document));
+            const pass: Pass | undefined = await Pass.fromDocument(document);
+            if(pass == undefined) {
+                continue;
+            }
+            passes.push(pass);
         }
         return passes;
     }

@@ -3,7 +3,6 @@ import { User } from '../../../user/model/User';
 import { UserManager } from '../../../user/UserManager';
 import { compare } from 'bcrypt';
 import { verifyToken } from 'node-2fa';
-import { error } from 'console';
 
 
 export class AuthController {

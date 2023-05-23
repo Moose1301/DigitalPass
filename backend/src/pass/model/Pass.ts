@@ -51,20 +51,23 @@ export class Pass {
 
     public toDocument(): any {
         return {
-            id: this.id,
-            issuedTo: this.issuedTo.id,
-            issuedBy: this.issuedBy.id,
+            id: this.id.toString(),
+            issuedTo: this.issuedTo.id.toString(),
+            issuedBy: this.issuedBy.id.toString(),
             issuedAt: this.issuedAt,
     
             roomFrom: this.roomFrom,
             roomTo: this.roomTo
         }
     }
-    public static async fromDocument(document: any): Promise<Pass> {
+    public static async fromDocument(document: any): Promise<Pass | undefined> {
+        if(document == undefined || document == null) {
+            return undefined;
+        }
         return new Pass(
-            document.id,
-            await UserManager.findById(document.issuedTo),
-            await UserManager.findById(document.issuedBy),
+            UUID.parseUUID(document.id),
+            await UserManager.findById(UUID.parseUUID(document.issuedTo)),
+            await UserManager.findById(UUID.parseUUID(document.issuedBy)),
             document.issuedAt,
             document.roomFrom,
             document.roomTo

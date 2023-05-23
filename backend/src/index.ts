@@ -21,5 +21,7 @@ DatabaseHandler.connect().then(() => {
     UserManager.loadData();
     PassManager.loadData();
     console.log("Connected to the Mongo Database");
+
+    startRestAPI();
+
 });
-startRestAPI();

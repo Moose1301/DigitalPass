@@ -9,9 +9,14 @@ import { Permission } from '../../../role/model/Role';
 
 export class PassController {
     public static async getPass(req: Request, res: Response, next: NextFunction): Promise<Response> {
-        const { id } = req.query;
-        const pass: Pass = await PassManager.findById(UUID.parseUUID(id as string));
-        if(pass == null) {
+        const { id } = req.params;
+        if(id == undefined) {
+            return res.status(400).json({
+                "error": "No ID Provided"
+            })
+        }
+        const pass: Pass | undefined = await PassManager.findById(UUID.parseUUID(id as string));
+        if(pass == undefined) {
             return res.status(404).json({
                 "error": "Pass with ID " + id + " not found"
             })
@@ -23,7 +28,15 @@ export class PassController {
                 });
             }
         }
-        return res.status(200).json(pass);
+        return res.status(200).json({
+            id: pass.id,
+            issuedTo: pass.issuedTo.getName(),
+            issuedBy: pass.issuedBy.getName(),
+            issuedAt: pass.issuedAt,
+
+            roomFrom: pass.roomFrom,
+            roomTo: pass.roomTo
+        });
     }
     public static async getListPasses(req: Request, res: Response, next: NextFunction): Promise<Response> {
         const passes: Pass[] = await PassManager.findAll();
@@ -66,7 +79,7 @@ export class PassController {
         for(var i = 0; i < passes.length; i++) {
             const pass: Pass = passes[i];
             passesJson.push({
-                id: pass.id,
+                id: pass.id.toString(),
                 issuedTo: pass.issuedTo.getName(),
                 issuedBy: pass.issuedBy.getName(),
                 issuedAt: pass.issuedAt,
@@ -75,6 +88,7 @@ export class PassController {
                 roomTo: pass.roomTo
             })
         }
+   
         return res.status(200).json({
             passes: passesJson
         })

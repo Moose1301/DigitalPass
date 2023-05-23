@@ -25,7 +25,7 @@ router.get("/user", isAuthenticated, UserController.getSelf);
 router.get("/pass/list", isAuthenticated, hasPermission(Permission.PASS_LIST), PassController.getListPasses);
 router.post("/pass/generate", isAuthenticated, hasPermission(Permission.PASS_CREATE), PassController.postGeneratePass);
 router.get("/pass/self", isAuthenticated, PassController.getSelfPasses)
-router.get("/pass/:id", isAuthenticated, PassController.getListPasses);
+router.get("/pass/:id", isAuthenticated, PassController.getPass);
 
 
 
