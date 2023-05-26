@@ -1,6 +1,9 @@
 <template>
   <div class="text-center">
-    <div class="bg-black rounded-lg mx-auto mt-8 max-w-sm h-96">
+    <div class=" 
+
+    bg-black rounded-lg mx-auto mt-8 max-w-sm h-96 text-slate-200"
+    >
       <div>
         Issuer: {{ pass.issuedBy }}
       </div>
@@ -13,7 +16,9 @@
       <div>
         To: {{ pass.roomTo }}
       </div>
-      <img class="w-16 md:w-32 lg:w-48" src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&choe=UTF-8&chl=%PAGE URL%">
+      <div class="mx-auto ">
+        <img class="w-16 md:w-32 lg:w-32" :src=get_qr_url()>
+      </div>
     </div>
 
   </div>
@@ -31,6 +36,9 @@ export default {
       pass: Pass
   }),
   methods: {
+    get_qr_url() {
+      return "https://chart.googleapis.com/chart?chs=150x150&cht=qr&choe=UTF-8&chl=" +  this.$route.path
+    },
     format_date(value) {
       return moment(String(value)).format("MM/DD HH:mm")
     }
